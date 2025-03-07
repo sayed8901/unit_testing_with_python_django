@@ -1,0 +1,6 @@
+py_unit_test_venv
+
+db_sqlite3
+
+__pycache__/
+
