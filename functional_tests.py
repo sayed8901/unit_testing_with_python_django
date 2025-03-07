@@ -61,7 +61,10 @@ class NewVisitorTest(unittest.TestCase):
         rows = table.find_elements(By.TAG_NAME, "tr")
 
         # Step 6.3: look for and verify the newly added item is in the table
-        self.assertTrue(any(row.text == "1. Buy peacock feathers" for row in rows))
+        self.assertTrue(
+            any(row.text == "1. Buy peacock feathers" for row in rows),
+            "New to-do item did not appear in table",
+        )
 
 
         # Step 7: Mark the test as incomplete
