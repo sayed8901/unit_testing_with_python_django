@@ -9,20 +9,26 @@ import time
 
 
 class NewVisitorTest(unittest.TestCase):
-    # Step 0.1: Start the browser
+    # Step 0.1: Start the browser before each test
     def setUp(self):
         self.browser = webdriver.Firefox()
     
-    # Step 0.2: Stop the browser
+    # Step 0.2: Stop the browser after each test
     def tearDown(self):
         self.browser.quit()
+
 
     
     # Creating a function to check a to_do item within the table
     def check_for_row_in_list_table(self, row_text):
+        # Locate the table by its ID
         table = self.browser.find_element(By.ID, "id_list_table")
+        # Get all rows in the table
         rows = table.find_elements(By.TAG_NAME, "tr")
+        # Assert that the text exists in any row
         self.assertIn(row_text, [row.text for row in rows])
+
+
 
 
     # Creating Functional Test method to insert to_do items
@@ -42,58 +48,37 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn("To-Do", header_text)
 
 
-        # Step 3 : Locate the input box by its ID (just like 'getElementByID' in JavaScript))
+        # Step 3.1 : Locate the input box by its ID (just like 'getElementByID' in JavaScript))
         input_box = self.browser.find_element(By.ID, "id_new_item")
 
-
-        # Step 4: Type "Use peacock feathers to make a fly" into the input box
+        # Step 3.2 : Type "Use peacock feathers to make a fly" into the input box
         # It is Selenium’s way of typing into an input elements (just like 'set inner_text' in JavaScript) 
         input_box.send_keys("Use peacock feathers to make a fly")
 
+        # Step 3.3 : lets us send special keys like 'Enter key' to submit the form
+        input_box.send_keys(Keys.ENTER)     # Submit the form
 
-        # Step 5.1: lets us send special keys like Enter..
-        input_box.send_keys(Keys.ENTER)
-
-        # Step 5.2: When we hit Enter, the page will refresh.
+        # Step 4 : When we hit Enter, the page will refresh.
         time.sleep(1)       # time to wait for the page to update
 
-        # step 5.3 : 
-        self.check_for_row_in_list_table("1: Buy peacock feathers")
-
-
-        # The page updates again, and now shows both items on her list
-        # Step 6.1: Locate the to-do list table
-        table = self.browser.find_element(By.ID, "id_list_table")
-
-        # Step 6.2: Find rows within the table
-        rows = table.find_elements(By.TAG_NAME, "tr")
-
-        # Step 6.3: look for and verify the newly added item is in the table
-        self.assertIn(
-            "1: Buy peacock feathers", 
-            [row.text for row in rows],
-        )
-        
-        self.assertIn(
-            "2: Use peacock feathers to make a fly", 
-            [row.text for row in rows],
-        )
-
-        # step
+        # step 5 : Use the helper function to check items
         self.check_for_row_in_list_table("1: Buy peacock feathers")
         self.check_for_row_in_list_table("2: Use peacock feathers to make a fly")
 
 
-        # Step 7: Mark the test as incomplete
+        # Step 6: Mark the test as incomplete
+        # This ensures we remember to complete the test later
         self.fail("Finish the test")
 
 
-        # Step 8: Print success message (in the terminal)
+        # Step 7: Print success message in the terminal
+        # (This line won't run due to self.fail)
         print("OK")
 
 
 
-# Step 9: Run the test
+# Final Step : Run the test script
 if __name__ == "__main__":
     unittest.main()
+
 
