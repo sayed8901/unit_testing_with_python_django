@@ -25,7 +25,7 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element(By.ID, "id_list_table")
         # Get all rows in the table
         rows = table.find_elements(By.TAG_NAME, "tr")
-        
+
         # Assert that the text exists in any row
         self.assertIn(row_text, [row.text for row in rows])
 
@@ -36,6 +36,7 @@ class NewVisitorTest(unittest.TestCase):
     def test_can_start_a_todo_list(self):
         # Step 1: Open the homepage
         self.browser.get("http://127.0.0.1:8000/")
+
 
 
         # Step 2.1: Verify the page title contains "To-Do"
@@ -49,37 +50,60 @@ class NewVisitorTest(unittest.TestCase):
         self.assertIn("To-Do", header_text)
 
 
+
         # Step 3.1 : Locate the input box by its ID (just like 'getElementByID' in JavaScript))
         input_box = self.browser.find_element(By.ID, "id_new_item")
 
-        # Step 3.2 : Type "Use peacock feathers to make a fly" into the input box
+        # step 3.2: type a placeholder text in the input box
+        self.assertEqual(input_box.get_attribute("placeholder"), "Enter a to-do item")
+
+
+
+        # Step 4 : Type "Buy peacock feathers" into the input box
         # It is Selenium’s way of typing into an input elements (just like 'set inner_text' in JavaScript) 
+        input_box.send_keys("Buy peacock feathers")
+
+
+
+        # Step 5.1 : lets us send special keys like 'Enter key'
+        input_box.send_keys(Keys.ENTER)     # To submit the form
+
+        # Step 5.2 : When we hit Enter, the page will refresh.
+        time.sleep(1)       # time to wait for the page to update
+
+        # step 5.3 : to check items
+        self.check_for_row_in_list_table("1: Buy peacock feathers")
+
+
+
+        # There is still a text box inviting to add another item.
+        # Step 6.1 : Locate the input box by its ID
+        input_box = self.browser.find_element(By.ID, "id_new_item")
+
+        # Step 6.2 : Type "Use peacock feathers to make a fly" into the input box
         input_box.send_keys("Use peacock feathers to make a fly")
 
-        # Step 3.3 : lets us send special keys like 'Enter key' to submit the form
-        input_box.send_keys(Keys.ENTER)     # Submit the form
+        # Step 6.3 : Again using the 'Enter key' to submit it
+        input_box.send_keys(Keys.ENTER)
 
-        # Step 4 : When we hit Enter, the page will refresh.
-        time.sleep(10)       # time to wait for the page to update
+        # Step 6.4 : time to wait for the page to update
+        time.sleep(1)
 
-        # step 5 : Use the helper function to check items
+
+
+        # Step 7 : Use the helper function to check items
         self.check_for_row_in_list_table("1: Buy peacock feathers")
         self.check_for_row_in_list_table("2: Use peacock feathers to make a fly")
 
 
-        # Step 6: Mark the test as incomplete
-        # This ensures we remember to complete the test later
-        self.fail("Finish the test")
 
-
-        # Step 7: Print success message in the terminal
+        # Step 8: Print success message in the terminal
         # (This line won't run due to self.fail)
-        print("Functional Tests OK")
+        print("OK")
 
 
 
-# Final Step : Run the test script
+
+# Step 9 : Run the test script
 if __name__ == "__main__":
     unittest.main()
-
-
