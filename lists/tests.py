@@ -9,12 +9,39 @@ class HomePageTest(TestCase):
         self.assertTemplateUsed(response, "home.html")
 
 
+    def test_displays_all_list_items(self):
+        Item.objects.create(text = "itemey 1")
+        Item.objects.create(text = "itemey 2")
+
+        response = self.client.get("/")
+
+        self.assertContains(response, "itemey 1")
+        self.assertContains(response, "itemey 1")
+
+
     def test_can_save_a_POST_request(self):
         response = self.client.post(
             "/", data={"item_text": "A new list item"}
         )
-        self.assertContains(response, "A new list item")
-        self.assertTemplateUsed(response, "home.html")
+
+        self.assertEqual(Item.objects.all().count(), 1)
+        new_item = Item.objects.first() # same as objects.all()[0]
+        self.assertEqual(new_item.text, "A new list item")
+
+
+    def test_redirects_after_POST(self):
+        response = self.client.post(
+            "/", data={"item_text": "A new list item"}
+        )
+        # to return an HTTP 302 redirect, back to the home URL.
+        self.assertRedirects(response, "/")
+
+
+
+    def test_only_saves_items_when_necessary(self):
+        self.client.get("/")
+        self.assertEqual(Item.objects.all().count(), 0)
+
 
 
 

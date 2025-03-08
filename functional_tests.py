@@ -25,6 +25,7 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element(By.ID, "id_list_table")
         # Get all rows in the table
         rows = table.find_elements(By.TAG_NAME, "tr")
+        
         # Assert that the text exists in any row
         self.assertIn(row_text, [row.text for row in rows])
 
@@ -59,7 +60,7 @@ class NewVisitorTest(unittest.TestCase):
         input_box.send_keys(Keys.ENTER)     # Submit the form
 
         # Step 4 : When we hit Enter, the page will refresh.
-        time.sleep(1)       # time to wait for the page to update
+        time.sleep(10)       # time to wait for the page to update
 
         # step 5 : Use the helper function to check items
         self.check_for_row_in_list_table("1: Buy peacock feathers")
@@ -73,7 +74,7 @@ class NewVisitorTest(unittest.TestCase):
 
         # Step 7: Print success message in the terminal
         # (This line won't run due to self.fail)
-        print("OK")
+        print("Functional Tests OK")
 
 
 
