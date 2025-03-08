@@ -1,4 +1,4 @@
-import unittest
+from django.test import LiveServerTestCase
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -8,11 +8,12 @@ import time
 
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     # Step 0.1: Start the browser before each test
     def setUp(self):
         self.browser = webdriver.Firefox()
     
+        
     # Step 0.2: Stop the browser after each test
     def tearDown(self):
         self.browser.quit()
@@ -23,7 +24,7 @@ class NewVisitorTest(unittest.TestCase):
     def check_for_row_in_list_table(self, row_text):
         # Locate the table by its ID
         table = self.browser.find_element(By.ID, "id_list_table")
-        # Get all rows in the table
+        # Find rows within the table
         rows = table.find_elements(By.TAG_NAME, "tr")
 
         # Assert that the text exists in any row
@@ -35,7 +36,8 @@ class NewVisitorTest(unittest.TestCase):
     # Creating Functional Test method to insert to_do items
     def test_can_start_a_todo_list(self):
         # Step 1: Open the homepage
-        self.browser.get("http://127.0.0.1:8000/")
+        # we are using here django provided 'live_server_url' instead of hardcoded "http://127.0.0.1:8000/"
+        self.browser.get(self.live_server_url)
 
 
 
@@ -98,12 +100,5 @@ class NewVisitorTest(unittest.TestCase):
 
 
         # Step 8: Print success message in the terminal
-        # (This line won't run due to self.fail)
-        print("OK")
+        print("Functional test - OK")
 
-
-
-
-# Step 9 : Run the test script
-if __name__ == "__main__":
-    unittest.main()
