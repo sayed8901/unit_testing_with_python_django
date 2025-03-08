@@ -110,6 +110,70 @@ class NewVisitorTest(LiveServerTestCase):
 
 
         # Step 8: Print success message in the terminal
-        print("Functional test - OK")
+        print("Functional test 1 - OK")
 
 
+
+
+
+
+    def test_multiple_users_can_lists_at_different_urls(self):
+        # Tasmi starts a new to-do list
+        self.browser.get(self.live_server_url)
+        input_box = self.browser.find_element(By.ID, "id_new_item")
+        input_box.send_keys("Buy peacock feathers")
+        input_box.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table("1: Buy peacock feathers")
+
+
+        # She notices that her list has a unique URL
+        tasmi_list_url = self.browser.current_url
+
+        # assertRegex is a helper function from unittest that checks whether a string matches a regular expression.
+        self.assertRegex(tasmi_list_url, "/lists/.+")
+
+
+
+        # Now a new user, Sayed, comes along to the site
+
+        ## We delete all the browser cookies first as a  way of simulating a brand new user session
+        self.browser.delete_all_cookies()
+
+
+
+        # Sayed visits the home page, there is no sign of Tasmi's List
+        self.browser.get(self.live_server_url)
+
+        page_text = self.browser.find_element(By.TAG_NAME, "body").text
+
+        self.assertNotIn("Buy peacock feathers", page_text)
+        self.assertNotIn("make a fly", page_text)
+
+
+        # Sayed starts a new list by entering a new item. He is less interesting then Tasmi....
+        input_box = self.browser.find_element(By.ID, "id_new_item")
+        input_box.send_keys("Buy milk")
+        input_box.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table("1: Buy milk")
+
+
+
+        # Sayed gets his own unique URL
+        sayed_list_URL = self.browser.current_url
+        self.assertRegex(sayed_list_URL, "/lists/.+")
+
+        # checking weather the both url are not equal...
+        self.assertNotEqual(sayed_list_URL, tasmi_list_url)
+
+
+
+        # Again, there is no sign of Tasmi's List
+        page_text = self.browser.find_element(By.TAG_NAME, "body").text
+
+        self.assertNotIn("Buy peacock feathers", page_text)
+        self.assertIn("Buy milk", page_text)
+
+
+
+        # Satisfied, they both go back to sleep
+        print("Functional test 2 - OK")
